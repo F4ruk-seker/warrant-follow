@@ -117,6 +117,7 @@ def send_wake_log():
     logger.construct(
         title='Service is woke'
     )
+    logger.send()
 
 
 def main():
