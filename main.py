@@ -13,6 +13,7 @@ from sqlalchemy.orm import sessionmaker
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 
 import schedule
 
@@ -33,6 +34,7 @@ def update_stock_price(stock):
     bw = None
     try:
 
+        # binary = FirefoxBinary(os.getenv('FIREFOX_PATH'))
         bw = webdriver.Firefox(options=options)
         bw.get(target)
         bw.set_window_rect(width=320, height=480)
