@@ -113,7 +113,14 @@ def stock_available_flower():
             stock_available_information_task(stock)
 
 
+def send_wake_log():
+    logger.construct(
+        title='Service is woke'
+    )
+
+
 def main():
+    send_wake_log()
     # stock price flow
     schedule.every().day.at(f"{8:02}:10").do(stock_price_flower)
     for hour in range(9, 18):
@@ -129,3 +136,8 @@ def main():
 
 if __name__ == '__main__':
     main()
+else:
+    logger.construct(
+        title='non mian'
+    )
+    logger.send()
