@@ -42,6 +42,7 @@ chrome_options.add_argument('--headless')
 chrome_driver = ChromeDriverManager().install()
 chrome_service = webdriver.chrome.service.Service(chrome_driver)
 
+
 def update_stock_price(stock):
     target = f'{SOURCE_URL}/{stock.name}:{stock.service.name}'
     bw = None
