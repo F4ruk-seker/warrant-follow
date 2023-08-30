@@ -45,10 +45,10 @@ def update_stock_price(stock):
 
         if stock.current_price == 0:
             percentage_change = ((int(stock.initial_price) - float(price)) / int(stock.initial_price)) * 100
-            percentage_change_send_to_log(percentage_change, float(price), stock, stock.initial_price >= float(price))
+            percentage_change_send_to_log(percentage_change, float(price), stock, float(price) >= stock.initial_price)
         else:
             percentage_change = ((int(stock.current_price) - float(price)) / int(stock.current_price)) * 100
-            percentage_change_send_to_log(percentage_change, float(price), stock, stock.current_price >= float(price))
+            percentage_change_send_to_log(percentage_change, float(price), stock, float(price) >= stock.current_price)
         stock.current_price = float(price)
         session.commit()
 
@@ -79,11 +79,13 @@ def get_task_list():
 def percentage_change_send_to_log(percentage, price, stock, way):
     if abs(percentage) > 2:
         logger.construct(
-            level="info" if way else "error",
-            description=f':chart_with_downwards_trend: Fiyat {"yükselişi" if way else "düşüşü"}'
+            level="success" if way else "error",
+            description=f':{"chart_with_upwards_trend" if way else "chart_with_downwards_trend"}: '
+                        f'Fiyat {"yükselişi" if way else "düşüşü"}'
                         f' {stock.name} {stock.current_price}to{price} | {abs(percentage):.2f}%"',
             metadata=f'{stock.name} {stock.current_price}to{price} | {abs(percentage):.2f}% |'
                      f' investment({stock.initial_price * stock.purchase_quantity}) '
+                     f'- middle({stock.current_price * stock.purchase_quantity})'
                      f'- gain({price * stock.purchase_quantity})'
         )
 
@@ -102,7 +104,9 @@ def stock_available_information_task(stock):
 def stock_price_flower():
     for stock in get_task_list():
         if datetime.datetime.now().date() >= stock.date_flow.process_start_date:
+            print(f'stock scraper start - {stock.name}')
             update_stock_price(stock)
+            print(f'stock scraper end - {stock.name}')
 
 
 def stock_available_flower():
@@ -122,6 +126,10 @@ def send_wake_log():
 
 def main():
     send_wake_log()
+    if bool(os.environ.get('DEBUG')):
+        print("deb")
+        stock_price_flower()
+
     # stock price flow
     schedule.every().day.at(f"{8:02}:10").do(stock_price_flower)
     for hour in range(9, 18):
