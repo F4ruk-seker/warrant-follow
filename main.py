@@ -127,7 +127,7 @@ def send_wake_log():
 def main():
     send_wake_log()
     if bool(os.environ.get('DEBUG')):
-        print("deb")
+        print("debug")
         stock_price_flower()
 
     # stock price flow
