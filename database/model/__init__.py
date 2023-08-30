@@ -1,5 +1,7 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Float
-from sqlalchemy.orm import relationship
+import datetime
+
+from sqlalchemy import Column, Integer, String, ForeignKey, Float, Boolean, Date
+from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.orm import declarative_base
 
 
@@ -15,8 +17,13 @@ class Stock(Base):
     initial_price = Column(Float)
     current_price = Column(Float)
     purchase_quantity = Column(Integer)
+    process = Column(Boolean)
 
-    sale_service = relationship("SaleService", back_populates="stock")
+    __service_id = Column(Integer, ForeignKey('SaleServices.id'))
+    service = relationship("SaleService")
+
+    __date_flow_id = Column(Integer, ForeignKey('DateFlows.id'))
+    date_flow = relationship('DateFlow')
 
 
 class SaleService(Base):
@@ -24,9 +31,16 @@ class SaleService(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    stock_id = Column(Integer, ForeignKey('Stocks.id'))
 
-    stock = relationship("Stock", back_populates="sale_service")
+
+class DateFlow(Base):
+    __tablename__ = 'DateFlows'
+    id = Column(Integer, primary_key=True)
+
+    request_start_date = Column(Date, nullable=True)
+    request_end_date = Column(Date, nullable=True)
+
+    process_start_date = Column(Date, nullable=True)
 
 
 if __name__ == '__main__':
@@ -34,4 +48,15 @@ if __name__ == '__main__':
     from sqlalchemy import create_engine
 
     engine = create_engine(os.environ.get('DATABASE_URL'), echo=False)
-    Base.metadata.create_all(engine)
+    # Base.metadata.create_all(engine)
+    session = sessionmaker(bind=engine)()
+    # for stock in session.query(Stock).all():
+    #     print(stock.service.name)
+    date = DateFlow()
+    date.process_start_date = datetime.datetime.now().date()
+    date.request_end_date = datetime.datetime.now().date()
+    date.request_start_date = datetime.datetime.now().date()
+    session.add(date)
+    session.commit()
+
+    session.close()
