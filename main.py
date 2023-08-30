@@ -49,9 +49,8 @@ chrome_options.add_experimental_option("prefs", prefs)
 
 BASE_DIR = os.getcwd()
 
-# chrome_driver = os.path.join(BASE_DIR, 'chromedriver')
-chrome_driver = '/usr/bin/google-chrome'
-# os.chmod(chrome_driver, 0o755)
+chrome_driver = os.path.join(BASE_DIR, 'chromedriver')
+os.chmod(chrome_driver, 0o755)
 
 
 def update_stock_price(stock):
