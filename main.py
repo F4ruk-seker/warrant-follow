@@ -16,12 +16,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.service import Service as FirefoxService
 
-from webdriver_manager.firefox import GeckoDriverManager
+# from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.chrome import ChromeDriverManager
 
 import schedule
 
 
-service = FirefoxService(GeckoDriverManager().install())
+# service = FirefoxService(GeckoDriverManager().install())
 
 engine = create_engine(os.environ.get('DATABASE_URL'), echo=False)
 session = sessionmaker(bind=engine)()
@@ -29,10 +30,17 @@ session = sessionmaker(bind=engine)()
 
 SOURCE_URL = os.environ.get('SOURCE_URL')
 
-options = Options()
-options.set_preference("general.useragent.override", "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1")
-options.add_argument('--headless')
+# options = Options()
+# options.set_preference("general.useragent.override", "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1")
+# options.add_argument('--headless')
 
+
+# Set up Chrome WebDriver
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument("user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1")
+chrome_options.add_argument('--headless')
+chrome_driver = ChromeDriverManager().install()
+chrome_service = webdriver.chrome.service.Service(chrome_driver)
 
 def update_stock_price(stock):
     target = f'{SOURCE_URL}/{stock.name}:{stock.service.name}'
@@ -40,7 +48,8 @@ def update_stock_price(stock):
     try:
 
         # binary = FirefoxBinary(os.getenv('FIREFOX_PATH'))
-        bw = webdriver.Firefox(options=options, service=service)
+        # bw = webdriver.Firefox(options=options, service=service)
+        bw = webdriver.Chrome(service=chrome_service, options=chrome_options)
         bw.get(target)
         bw.set_window_rect(width=320, height=480)
         time.sleep(5)
