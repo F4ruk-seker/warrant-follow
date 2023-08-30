@@ -126,7 +126,8 @@ def stock_available_flower():
 
 def send_wake_log():
     logger.construct(
-        title='Service is woke'
+        title='Service is woke',
+        metadata=f'{os.name}'
     )
     logger.send()
 
