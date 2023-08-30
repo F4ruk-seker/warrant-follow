@@ -15,7 +15,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.service import Service as FirefoxService
-
+from selenium.webdriver.chrome.service import Service
 # from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.chrome import ChromeDriverManager
 
@@ -39,8 +39,10 @@ SOURCE_URL = os.environ.get('SOURCE_URL')
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1")
 chrome_options.add_argument('--headless')
-chrome_driver = ChromeDriverManager().install()
-chrome_service = webdriver.chrome.service.Service(chrome_driver)
+BASE_DIR = os.getcwd()
+
+chrome_driver = os.path.join(BASE_DIR, 'chromedriver')
+
 
 
 def update_stock_price(stock):
@@ -50,7 +52,7 @@ def update_stock_price(stock):
 
         # binary = FirefoxBinary(os.getenv('FIREFOX_PATH'))
         # bw = webdriver.Firefox(options=options, service=service)
-        bw = webdriver.Chrome(service=chrome_service, options=chrome_options)
+        bw = webdriver.Chrome(options=chrome_options, service=Service(executable_path=chrome_driver))
         bw.get(target)
         bw.set_window_rect(width=320, height=480)
         time.sleep(5)
@@ -77,12 +79,14 @@ def update_stock_price(stock):
             pass
 
     except Exception as error:
+        print(error)
         logger.construct(
             title='get stock price',
             description='Price',
             metadata=str(error.__dict__).replace(',', '\n'),
             level='error'
         )
+        logger.send()
     finally:
         if bw is not None:
             bw.quit()
@@ -137,7 +141,7 @@ def stock_available_flower():
 def send_wake_log():
     logger.construct(
         title='Service is woke',
-        metadata=f'{os.name}'
+        metadata=f'name {os.name}'
     )
     logger.send()
 
