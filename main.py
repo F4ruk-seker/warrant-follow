@@ -14,9 +14,14 @@ from sqlalchemy.orm import sessionmaker
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from selenium.webdriver.firefox.service import Service as FirefoxService
+
+from webdriver_manager.firefox import GeckoDriverManager
 
 import schedule
 
+
+service = FirefoxService(GeckoDriverManager().install())
 
 engine = create_engine(os.environ.get('DATABASE_URL'), echo=False)
 session = sessionmaker(bind=engine)()
@@ -35,7 +40,7 @@ def update_stock_price(stock):
     try:
 
         # binary = FirefoxBinary(os.getenv('FIREFOX_PATH'))
-        bw = webdriver.Firefox(options=options)
+        bw = webdriver.Firefox(options=options, service=service)
         bw.get(target)
         bw.set_window_rect(width=320, height=480)
         time.sleep(5)
