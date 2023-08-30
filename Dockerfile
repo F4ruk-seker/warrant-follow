@@ -13,4 +13,4 @@ RUN  apt-get update && apt-get install -y python3-pip && pip install -r requirem
 
 COPY . .
 
-CMD python main.py
+CMD python3 main.py
