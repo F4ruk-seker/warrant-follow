@@ -151,7 +151,6 @@ def send_wake_log():
                  f'{strftime("%z", gmtime())}'
     )
     logger.send()
-    logger.discord.delete()
 
 
 def main():
