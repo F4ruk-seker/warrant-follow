@@ -63,6 +63,9 @@ class DiscordLogger:
             url=self.webhook_url, username=self.application_name
         )
 
+    def remove_embed_msg(self):
+        self.__remove_embeds()
+
     def __remove_embeds(self):
         existing_embeds = self.discord.get_embeds()
         for i in reversed(range(0, len(existing_embeds))):

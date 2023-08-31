@@ -22,11 +22,20 @@ from webdriver_manager.chrome import ChromeDriverManager
 import schedule
 
 
-engine = create_engine(os.environ.get('DATABASE_URL'), echo=False)
-session = sessionmaker(bind=engine)()
 
 SOURCE_URL = os.environ.get('SOURCE_URL')
 BASE_DIR = os.getcwd()
+
+
+def session_start():
+    global session
+    engine = create_engine(os.environ.get('DATABASE_URL'), echo=False)
+    session = sessionmaker(bind=engine)()
+
+
+def session_close():
+    global session
+    session.close()
 
 
 if os.name == 'nt':
@@ -54,7 +63,6 @@ def update_stock_price(stock):
     bw = None
     try:
 
-        # binary = FirefoxBinary(os.getenv('FIREFOX_PATH'))
         if os.name == 'nt':
             bw = webdriver.Firefox(options=options)
         else:
@@ -80,8 +88,10 @@ def update_stock_price(stock):
         try:
             if len(logger.discord.get_embeds()) > 0:
                 logger.send()
+            logger.remove_embed_msg()
         except:
             pass
+
 
     except Exception as error:
         print(error)
@@ -95,6 +105,7 @@ def update_stock_price(stock):
     finally:
         if bw is not None:
             bw.quit()
+
 
 
 def get_task_list():
@@ -128,19 +139,25 @@ def stock_available_information_task(stock):
 
 
 def stock_price_flower():
+    session_start()
+
     for stock in get_task_list():
         if datetime.datetime.now().date() >= stock.date_flow.process_start_date:
             print(f'stock scraper start - {stock.name}')
             update_stock_price(stock)
             print(f'stock scraper end - {stock.name}')
 
+    session_close()
+
 
 def stock_available_flower():
+    session_start()
     for stock in get_task_list():
         df = stock.date_flow
         s, e, n = df.request_start_date, df.request_end_date, datetime.datetime.now().date()
         if s <= n <= e:
             stock_available_information_task(stock)
+    session_close()
 
 
 def send_wake_log(*args, **kwargs):
@@ -152,23 +169,25 @@ def send_wake_log(*args, **kwargs):
                  f'Tasks:\n{job_text}',
     )
     logger.send()
+    logger.remove_embed_msg()
 
 
 def main():
     task_list_information = []
 
     # stock price flow
-    schedule.every().day.at(f"{8+3:02}:10").do(stock_price_flower)
+    schedule.every().day.at(f"{8-3:02}:10").do(stock_price_flower)
     task_list_information.append(f'08:10 - stock_price_flower')
     for hour in range(9, 18):
-        schedule.every().day.at(f"{hour+3:02}:00").do(stock_price_flower)
+        schedule.every().day.at(f"{hour-3:02}:00").do(stock_price_flower)
         task_list_information.append(f"{hour:02}:00 - stock_price_flower")
 
     # stock available flow
-    schedule.every().day.at(f'{10+3:02}:50').do(stock_available_flower)
+    schedule.every().day.at(f'{10-3:02}:50').do(stock_available_flower)
     task_list_information.append(f"{10:02}:00 - stock_available_flower")
 
     send_wake_log(job_list=task_list_information)
+
     if bool(os.environ.get('DEBUG')):
         print("debug")
         stock_price_flower()
