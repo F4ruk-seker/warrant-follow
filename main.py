@@ -143,31 +143,36 @@ def stock_available_flower():
             stock_available_information_task(stock)
 
 
-def send_wake_log():
+def send_wake_log(*args, **kwargs):
     from time import gmtime, strftime
+    job_text = '\n'.join(kwargs.get('job_list', []))
     logger.construct(
         title='Service is woke',
-        metadata=f'name {os.name}'
-                 f'{strftime("%z", gmtime())}'
+        metadata=f'os name {os.name} - tz {strftime("%z", gmtime())}\n'
+                 f'Tasks:\n{job_text}',
     )
     logger.send()
 
 
 def main():
-    send_wake_log()
+    task_list_information = []
+
+    # stock price flow
+    schedule.every().day.at(f"{8+3:02}:10").do(stock_price_flower)
+    task_list_information.append(f'08:10 - stock_price_flower')
+    for hour in range(9, 18):
+        schedule.every().day.at(f"{hour+3:02}:00").do(stock_price_flower)
+        task_list_information.append(f"{hour:02}:00 - stock_price_flower")
+
+    # stock available flow
+    schedule.every().day.at(f'{10+3:02}:50').do(stock_available_flower)
+    task_list_information.append(f"{10:02}:00 - stock_available_flower")
+
+    send_wake_log(job_list=task_list_information)
     if bool(os.environ.get('DEBUG')):
         print("debug")
         stock_price_flower()
 
-    # stock price flow
-    schedule.every().day.at(f"{8:02}:10").do(stock_price_flower)
-    for hour in range(9, 18):
-        schedule.every().day.at(f"{hour:02}:00").do(stock_price_flower)
-
-    # stock available flow
-    schedule.every().day.at(f'{10:02}:50').do(stock_available_flower)
-
-    print(schedule)
     while True:
         schedule.run_pending()
         time.sleep(1)
