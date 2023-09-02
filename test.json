@@ -1,0 +1,7 @@
+{
+    "name":"PARS",
+"initial_price":10.0,
+"current_price":20.0,
+"purchase_quantity":10,
+"process":"True"
+}
