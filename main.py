@@ -23,7 +23,7 @@ class StockAPIModel(BaseModel):
 
 app = FastAPI()
 
-origins = ["http://localhost:5173"]
+origins = ["https://finance.darken.gen.tr/", "https://finance.darken.gen.tr"]
 
 app.add_middleware(
     CORSMiddleware,
