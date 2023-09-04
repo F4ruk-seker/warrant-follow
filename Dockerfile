@@ -11,7 +11,11 @@ ENV PATH /home/root/.local/bin:${PATH}
 ENV BW_PATH "cypress/browsers:latest"
 ENV BW_PATHQ "browsers:latest"
 
-RUN  apt-get update && apt-get install -y python3-pip && pip install -r requirements.txt  
+RUN  apt-get update && apt-get install -y python3-pip && pip install -r requirements.txt
+
+RUN apt-get install -y wget
+RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+RUN apt-get install -y ./google-chrome-stable_current_amd64.deb
 
 COPY . .
 
