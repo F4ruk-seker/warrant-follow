@@ -170,7 +170,8 @@ def send_wake_log(*args, **kwargs):
     logger.construct(
         title='Service is woke',
         metadata=f'os name {os.name} - tz {strftime("%z", gmtime())}\n'
-                 f'Tasks:\n{job_text}',
+                 f'Tasks:\n{job_text}'
+                 f'{os.environ.get("BW_PATH", "BW_PATH")}'
     )
     logger.send()
     logger.remove_embed_msg()
