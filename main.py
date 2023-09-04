@@ -83,6 +83,7 @@ options.set_preference("general.useragent.override",
                        "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1")
 options.add_argument('--headless')
 
+
 def update_stock_price(stock):
     target = f'{SOURCE_URL}/{stock.name}:{stock.service.name}'
     bw = None
@@ -95,7 +96,7 @@ def update_stock_price(stock):
             # bw = webdriver.Chrome(options=chrome_options)
 
         bw.get(target)
-        # bw.set_window_rect(width=320, height=480)
+        bw.set_window_rect(width=320, height=480)
         time.sleep(5)
         price = bw.find_element(By.XPATH,
                                 '/html/body/c-wiz[2]/div/div[4]/div/main/div[2]/div[1]/c-wiz/div/div[1]/div/div[1]/div/div[1]/div/span/div/div')
