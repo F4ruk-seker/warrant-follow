@@ -8,8 +8,8 @@ COPY requirements.txt  .
 
 ENV PATH /home/root/.local/bin:${PATH}
 
-ENV BW_PATH ${cypress/browsers:latest}
-ENV BW_PATHQ ${browsers:latest}
+ENV BW_PATH "cypress/browsers:latest"
+ENV BW_PATHQ "browsers:latest"
 
 RUN  apt-get update && apt-get install -y python3-pip && pip install -r requirements.txt  
 
