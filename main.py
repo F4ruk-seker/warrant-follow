@@ -59,8 +59,21 @@ else:
     # chrome_options.add_experimental_option("prefs", prefs)
     # chrome_driver = os.path.join(BASE_DIR, 'chromedriver')
     chrome_driver = '/usr/bin/google-chrome'  # lnx test
-    os.chmod(chrome_driver, 0o755)
+    # chrome_options._binary_location = chrome_driver
+    chrome_options.binary_location(chrome_driver)
+    # os.chmod(chrome_driver, 0o755)
 
+def get_chrome():
+    if os.path.isfile('/usr/bin/chromium-browser'):
+        return '/usr/bin/chromium-browser'
+    elif os.path.isfile('/usr/bin/chromium'):
+        return '/usr/bin/chromium'
+    elif os.path.isfile('/usr/bin/chrome'):
+        return '/usr/bin/chrome'
+    elif os.path.isfile('/usr/bin/google-chrome'):
+        return '/usr/bin/google-chrome'
+    else:
+        return None
 
 def update_stock_price(stock):
     target = f'{SOURCE_URL}/{stock.name}:{stock.service.name}'
@@ -173,9 +186,8 @@ def send_wake_log(*args, **kwargs):
     logger.construct(
         title='Service is woke',
         metadata=f'os name {os.name} - tz {strftime("%z", gmtime())}\n'
-                 f'Tasks:\n{job_text}'
-                 f'{os.environ.get("BW_PATH", "BW_PATH")}'
-                 f'{os.environ.get("BW_PATHQ", "BW_PATHQ")}'
+                 f'Tasks:\n{job_text}\n'
+                 f'chrome {get_chrome()}'
     )
     logger.send()
     logger.remove_embed_msg()
