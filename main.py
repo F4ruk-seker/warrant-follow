@@ -51,6 +51,7 @@ def get_chrome():
 
 
 if os.name == 'nt':
+    print("nt base")
     options = Options()
     options.set_preference("general.useragent.override", "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1")
     options.add_argument('--headless')
@@ -58,10 +59,9 @@ else:
 
     # Set up Chrome WebDriver
     chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument(
-        "--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1")
+    # chrome_options.add_argument(
+    #     "--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1")
     chrome_options.add_argument('--headless')
-    chrome_options.add_argument("--no-sandbox")
 
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument("--disable-dev-shm-usage")
@@ -105,8 +105,6 @@ def update_stock_price(stock):
         stock.current_price = float(price)
         session.commit()
 
-
-
     except Exception as error:
         logger.construct(
             title='get stock price',
@@ -114,10 +112,8 @@ def update_stock_price(stock):
             metadata=str(error.__dict__).replace(',', '\n'),
             level='error'
         )
-        logger.send()
+        # logger.send()
         # logger.remove_embed_msg()
-
-
         raise error
     finally:
         if bw is not None:
