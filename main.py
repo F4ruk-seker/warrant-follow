@@ -57,7 +57,8 @@ else:
     # chrome_options.headless = True
 
     # chrome_options.add_experimental_option("prefs", prefs)
-    chrome_driver = os.path.join(BASE_DIR, 'chromedriver')
+    # chrome_driver = os.path.join(BASE_DIR, 'chromedriver')
+    chrome_driver = '/usr/bin/google-chrome'  # lnx test
     os.chmod(chrome_driver, 0o755)
 
 
