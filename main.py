@@ -50,6 +50,8 @@ else:
         "--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1")
     chrome_options.add_argument('--headless')
     # chrome_options.add_argument("--no-sandbox")
+
+    chrome_options.add_argument('--no-sandbox')
     # chrome_options.add_argument("--disable-dev-shm-usage")
     # prefs = {"profile.managed_default_content_settings.images": 2}
     # chrome_options.headless = True
