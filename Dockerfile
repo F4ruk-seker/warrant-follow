@@ -1,4 +1,4 @@
-FROM cypress/browsers:latest/ubuntu:latest
+FROM cypress/browsers:latest
 
 RUN apt-get install python3 -y
 
