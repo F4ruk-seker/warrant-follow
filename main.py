@@ -22,7 +22,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 import schedule
 
 
-
 SOURCE_URL = os.environ.get('SOURCE_URL')
 BASE_DIR = os.getcwd()
 
@@ -56,6 +55,7 @@ if os.name == 'nt':
     options.set_preference("general.useragent.override", "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1")
     options.add_argument('--headless')
 else:
+    ChromeDriverManager().install()
 
     # Set up Chrome WebDriver
     chrome_options = webdriver.ChromeOptions()
