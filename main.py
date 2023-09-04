@@ -48,7 +48,7 @@ def get_chrome():
     else:
         return None
 
-
+'''
 if os.name == 'nt':
     print("nt base")
     options = Options()
@@ -76,17 +76,24 @@ else:
     # chrome_options.binary_location(chrome_driver)
     os.chmod(chrome_driver, 0o755)
 
+'''
+
+options = Options()
+options.set_preference("general.useragent.override",
+                       "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1")
+options.add_argument('--headless')
 
 def update_stock_price(stock):
     target = f'{SOURCE_URL}/{stock.name}:{stock.service.name}'
     bw = None
     try:
 
-        if os.name == 'nt':
-            bw = webdriver.Firefox(options=options)
-        else:
-            bw = webdriver.Chrome(options=chrome_options, service=Service(executable_path=chrome_driver))
+        # if os.name == 'nt':
+        bw = webdriver.Firefox(options=options)
+        # else:
+        #     bw = webdriver.Chrome(options=chrome_options, service=Service(executable_path=chrome_driver))
             # bw = webdriver.Chrome(options=chrome_options)
+
         bw.get(target)
         # bw.set_window_rect(width=320, height=480)
         time.sleep(5)
