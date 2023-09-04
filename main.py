@@ -142,7 +142,8 @@ def stock_price_flower():
     session_start()
 
     for stock in get_task_list():
-        if datetime.datetime.now().date() >= stock.date_flow.process_start_date:
+        if datetime.datetime.now().date() >= stock.date_flow.process_start_date and stock.process:
+
             print(f'stock scraper start - {stock.name}')
             update_stock_price(stock)
             print(f'stock scraper end - {stock.name}')
