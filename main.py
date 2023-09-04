@@ -85,7 +85,8 @@ def update_stock_price(stock):
         if os.name == 'nt':
             bw = webdriver.Firefox(options=options)
         else:
-            bw = webdriver.Chrome(options=chrome_options, service=Service(executable_path=get_chrome()))
+            # bw = webdriver.Chrome(options=chrome_options, service=Service(executable_path=get_chrome()))
+            bw = webdriver.Chrome(options=chrome_options)
         bw.get(target)
         # bw.set_window_rect(width=320, height=480)
         time.sleep(5)
