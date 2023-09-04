@@ -37,6 +37,18 @@ def session_close():
     global session
     session.close()
 
+def get_chrome():
+    if os.path.isfile('/usr/bin/chromium-browser'):
+        return '/usr/bin/chromium-browser'
+    elif os.path.isfile('/usr/bin/chromium'):
+        return '/usr/bin/chromium'
+    elif os.path.isfile('/usr/bin/chrome'):
+        return '/usr/bin/chrome'
+    elif os.path.isfile('/usr/bin/google-chrome'):
+        return '/usr/bin/google-chrome'
+    else:
+        return None
+
 
 if os.name == 'nt':
     options = Options()
@@ -57,23 +69,13 @@ else:
     # chrome_options.headless = True
 
     # chrome_options.add_experimental_option("prefs", prefs)
-    chrome_driver = os.path.join(BASE_DIR, 'chromedriver')
+    # chrome_driver = os.path.join(BASE_DIR, 'chromedriver')
+
     # chrome_driver = '/usr/bin/google-chrome'  # lnx test
     # chrome_options._binary_location = chrome_driver
     # chrome_options.binary_location(chrome_driver)
-    os.chmod(chrome_driver, 0o755)
+    # os.chmod(chrome_driver, 0o755)
 
-def get_chrome():
-    if os.path.isfile('/usr/bin/chromium-browser'):
-        return '/usr/bin/chromium-browser'
-    elif os.path.isfile('/usr/bin/chromium'):
-        return '/usr/bin/chromium'
-    elif os.path.isfile('/usr/bin/chrome'):
-        return '/usr/bin/chrome'
-    elif os.path.isfile('/usr/bin/google-chrome'):
-        return '/usr/bin/google-chrome'
-    else:
-        return None
 
 def update_stock_price(stock):
     target = f'{SOURCE_URL}/{stock.name}:{stock.service.name}'
@@ -83,7 +85,7 @@ def update_stock_price(stock):
         if os.name == 'nt':
             bw = webdriver.Firefox(options=options)
         else:
-            bw = webdriver.Chrome(options=chrome_options, service=Service(executable_path=chrome_driver))
+            bw = webdriver.Chrome(options=chrome_options, service=Service(executable_path=get_chrome()))
         bw.get(target)
         bw.set_window_rect(width=320, height=480)
         time.sleep(5)
