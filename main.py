@@ -69,12 +69,12 @@ else:
     # chrome_options.headless = True
 
     chrome_options.add_experimental_option("prefs", prefs)
-    # chrome_driver = os.path.join(BASE_DIR, 'chromedriver')
+    chrome_driver = os.path.join(BASE_DIR, 'chromedriver_114_0_5735_90')
 
     # chrome_driver = '/usr/bin/google-chrome'  # lnx test
     # chrome_options._binary_location = chrome_driver
     # chrome_options.binary_location(chrome_driver)
-    # os.chmod(chrome_driver, 0o755)
+    os.chmod(chrome_driver, 0o755)
 
 
 def update_stock_price(stock):
@@ -85,8 +85,8 @@ def update_stock_price(stock):
         if os.name == 'nt':
             bw = webdriver.Firefox(options=options)
         else:
-            # bw = webdriver.Chrome(options=chrome_options, service=Service(executable_path=get_chrome()))
-            bw = webdriver.Chrome(options=chrome_options)
+            bw = webdriver.Chrome(options=chrome_options, service=Service(executable_path=chrome_driver))
+            # bw = webdriver.Chrome(options=chrome_options)
         bw.get(target)
         # bw.set_window_rect(width=320, height=480)
         time.sleep(5)
