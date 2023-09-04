@@ -46,14 +46,14 @@ else:
 
     # Set up Chrome WebDriver
     chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument("user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1")
+    chrome_options.set_capability("general.useragent.override", "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1")
     chrome_options.add_argument('--headless')
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    prefs = {"profile.managed_default_content_settings.images": 2}
-    chrome_options.headless = True
+    # chrome_options.add_argument("--no-sandbox")
+    # chrome_options.add_argument("--disable-dev-shm-usage")
+    # prefs = {"profile.managed_default_content_settings.images": 2}
+    # chrome_options.headless = True
 
-    chrome_options.add_experimental_option("prefs", prefs)
+    # chrome_options.add_experimental_option("prefs", prefs)
     chrome_driver = os.path.join(BASE_DIR, 'chromedriver')
     os.chmod(chrome_driver, 0o755)
 
@@ -106,7 +106,6 @@ def update_stock_price(stock):
     finally:
         if bw is not None:
             bw.quit()
-
 
 
 def get_task_list():
