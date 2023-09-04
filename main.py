@@ -69,7 +69,7 @@ else:
     # chrome_options.headless = True
 
     chrome_options.add_experimental_option("prefs", prefs)
-    chrome_driver = os.path.join(BASE_DIR, 'chromedriver_114_0_5735_90')
+    chrome_driver = os.path.join(BASE_DIR, 'chromedriver_114_0_5735_16')
 
     # chrome_driver = '/usr/bin/google-chrome'  # lnx test
     # chrome_options._binary_location = chrome_driver
