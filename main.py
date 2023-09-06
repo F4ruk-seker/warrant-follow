@@ -22,6 +22,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 import schedule
 
 
+DEBUG = False
 SOURCE_URL = os.environ.get('SOURCE_URL')
 BASE_DIR = os.getcwd()
 
@@ -81,7 +82,9 @@ else:
 options = Options()
 options.set_preference("general.useragent.override",
                        "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1")
-options.add_argument('--headless')
+
+if not DEBUG:
+    options.add_argument('--headless')
 
 
 def update_stock_price(stock):
@@ -98,8 +101,8 @@ def update_stock_price(stock):
         bw.get(target)
         bw.set_window_rect(width=320, height=480)
         time.sleep(5)
-        price = bw.find_element(By.XPATH,
-                                '/html/body/c-wiz[2]/div/div[4]/div/main/div[2]/div[1]/c-wiz/div/div[1]/div/div[1]/div/div[1]/div/span/div/div')
+        x_path = '/html/body/c-wiz[2]/div/div[4]/div/main/div[2]/div[1]/c-wiz/div/div[1]/div/div[1]/div/div[1]/div/span/div/div'
+        price = bw.find_element(By.XPATH, x_path)
 
         price = price.text.replace('₺', '')
         price = price.replace(',', '.')
@@ -125,7 +128,8 @@ def update_stock_price(stock):
         raise error
     finally:
         if bw is not None:
-            bw.quit()
+            if not DEBUG:
+                bw.quit()
 
 
 def get_task_list():
