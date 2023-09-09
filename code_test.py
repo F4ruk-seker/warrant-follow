@@ -1,17 +1,8 @@
-
-from requests import api
-
-
-r = api.post('http://127.0.0.1:8000/stock/', json={
-    "name": "PARS",
-    "initial_price": "10",
-    "current_price": "20",
-    "purchase_quantity": "10",
-    "process": "True"
-})
+import requests
 
 
-print(r)
-print(r.status_code)
-print(r.text)
-print(r.json())
+r = requests.get('https://protein7.com/3680-home_default/xpro-bcaa-glutamine-600gr.jpg')
+print(r.url)
+print(r.history)
+print(r.cookies)
+print(r.is_redirect)

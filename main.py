@@ -119,12 +119,12 @@ def update_stock_price(stock):
     except Exception as error:
         logger.construct(
             title='get stock price',
-            description='Price',
+            description=bw.page_source,
             metadata=str(error.__dict__).replace(',', '\n'),
-            level='error'
+            level='error',
         )
-        # logger.send()
-        # logger.remove_embed_msg()
+        logger.send()
+        logger.remove_embed_msg()
         raise error
     finally:
         if bw is not None:
