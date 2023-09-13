@@ -107,13 +107,16 @@ def update_stock_price(stock):
         price = price.text.replace('₺', '')
         price = price.replace(',', '.')
 
+        price = round(float(price), 2)
+
         if stock.current_price == 0:
-            percentage_change = ((int(stock.initial_price) - float(price)) / int(stock.initial_price)) * 100
-            percentage_change_send_to_log(percentage_change, float(price), stock, float(price) >= stock.initial_price)
+            percentage_change = round(((int(stock.initial_price) - price) / int(stock.initial_price)) * 100, 2)
+            percentage_change_send_to_log(percentage_change, price, stock, price >= stock.initial_price)
         else:
-            percentage_change = ((int(stock.current_price) - float(price)) / int(stock.current_price)) * 100
-            percentage_change_send_to_log(percentage_change, float(price), stock, float(price) >= stock.current_price)
-        stock.current_price = float(price)
+            stock_price = round(float(stock.current_price), 2)
+            percentage_change = round(((stock_price - price) / stock_price) * 100, 2)
+            percentage_change_send_to_log(percentage_change, price, stock, price >= stock.current_price)
+        stock.current_price = price
         session.commit()
 
     except Exception as error:
@@ -144,10 +147,11 @@ def percentage_change_send_to_log(percentage, price, stock, way):
             description=f':{"chart_with_upwards_trend" if way else "chart_with_downwards_trend"}: '
                         f'Fiyat {"yükselişi" if way else "düşüşü"}'
                         f' {stock.name} {stock.current_price}to{price} | {abs(percentage):.2f}%"',
-            metadata=f'{stock.name} {stock.current_price}to{price} | {abs(percentage):.2f}% |'
-                     f' investment({stock.initial_price * stock.purchase_quantity}) '
-                     f'- middle({stock.current_price * stock.purchase_quantity})'
-                     f'- gain({price * stock.purchase_quantity})'
+            metadata=f'{stock.name} {stock.current_price}to{price} | {abs(percentage):.2f}%'
+                     f''
+                     f' investment({round((stock.initial_price * stock.purchase_quantity), 2)}) '
+                     f'- middle({round((stock.current_price * stock.purchase_quantity), 2)})'
+                     f'- gain({round((price * stock.purchase_quantity), 2)})'
         )
 
 
@@ -164,14 +168,14 @@ def stock_available_information_task(stock):
 
 def stock_price_flower():
     session_start()
-
+    print("SCRAPER TASK START")
     for stock in get_task_list():
         if datetime.datetime.now().date() >= stock.date_flow.process_start_date and stock.process:
 
             print(f'stock scraper start - {stock.name}')
             update_stock_price(stock)
             print(f'stock scraper end - {stock.name}')
-
+    print("SCRAPER TASK END")
     session_close()
 
     try:
@@ -180,6 +184,7 @@ def stock_price_flower():
         logger.remove_embed_msg()
     except:
         pass
+
 
 def stock_available_flower():
     session_start()
@@ -210,7 +215,7 @@ def main():
     # stock price flow
     schedule.every().day.at(f"{8-3:02}:10").do(stock_price_flower)
     task_list_information.append(f'08:10 - stock_price_flower')
-    for hour in range(9, 18):
+    for hour in range(9, 20):
         schedule.every().day.at(f"{hour-3:02}:00").do(stock_price_flower)
         task_list_information.append(f"{hour:02}:00 - stock_price_flower")
 
